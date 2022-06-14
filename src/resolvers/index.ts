@@ -1,16 +1,9 @@
-const books = [
-  {
-    title: 'The Awakening',
-    description: 'Kate Chopin',
-  },
-  {
-    title: 'City of Glass',
-    description: 'Paul Auster',
-  },
-];
+import ArticleRepository from '../repositories/article-repository';
 
 export const Resolvers = {
   Query: {
-    articles: () => books,
+    async articles() {
+      return ArticleRepository.findAll();
+    },
   },
 };

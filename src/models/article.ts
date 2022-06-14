@@ -16,7 +16,7 @@ class Article extends Model<InferAttributes<Article>, InferCreationAttributes<Ar
 
   declare userId: ForeignKey<User['id']>;
 
-  declare user?: NonAttribute<User>;
+  declare user: NonAttribute<User>;
 
   declare title: string;
 
@@ -50,8 +50,8 @@ Article.init({
   },
 },
 {
-  tableName: 'product_units',
-  modelName: 'product_unit',
+  tableName: 'articles',
+  modelName: 'article',
   sequelize: DatabaseConnection,
 });
 

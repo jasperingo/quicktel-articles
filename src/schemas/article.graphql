@@ -1,4 +1,11 @@
 type Aritcle {
+  id: Int
+
+  user: User
+
   title: String
+
   description: String
+
+  createdAt: String
 }
