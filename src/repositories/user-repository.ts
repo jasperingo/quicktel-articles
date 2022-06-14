@@ -10,6 +10,10 @@ const UserRepository = {
     return User.findByPk(id);
   },
 
+  findByEmail(email: string) {
+    return User.findOne({ where: { email } });
+  },
+
   create({ name, email, password }: User) {
     return User.create({ name, email, password });
   },

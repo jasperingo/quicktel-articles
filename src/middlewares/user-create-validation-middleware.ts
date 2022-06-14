@@ -1,28 +1,57 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
-import Joi from 'joi';
+import { checkSchema, Schema, validationResult } from 'express-validator';
 import UserRepository from '../repositories/user-repository';
 
 type NextFunction = (root: any, args: any, context: any, info: any) => void;
 
-const schema = Joi.object({
-  name: Joi.string().required(),
+const schema: Schema = {
+  name: { notEmpty: { errorMessage: 'Field is required' } },
 
-  email: Joi.string().email({ minDomainSegments: 2 }).external(async (value) => {
-    if (await UserRepository.existsByEmail(value)) {
-      throw new Error('any.invalid');
+  email: {
+    notEmpty: {
+      bail: true,
+      errorMessage: 'Field is required',
+    },
+
+    isEmail: {
+      bail: true,
+      errorMessage: 'Field is invalid',
+    },
+
+    custom: {
+      options: async (value) => {
+        if (await UserRepository.existsByEmail(value))
+          throw 'Field already exists';
+      }
     }
+  },
 
-    return value;
-  }),
+  password: {
+    notEmpty: {
+      bail: true,
+      errorMessage: 'Field is required',
+    },
 
-  password: Joi.string().min(6),
-});
+    isLength: {
+      options: {
+        min: 6
+      }
+    },
+  }
+};
 
 const UserCreateValidationMiddleware = (next: NextFunction) => 
 async (root: any, args: any, context: any, info: any) => {
-  const { error } = await schema.validateAsync(args, { abortEarly: false, context });
+ 
+  const req = { body: args };
+
+  await checkSchema(schema).run(req);
   
-  if (error) throw new GraphQLYogaError('Validation failed', { data: error.details });
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new GraphQLYogaError('Validation failed', { data: errors.array() });
+  }
 
   return next(root, args, context, info)
 }
