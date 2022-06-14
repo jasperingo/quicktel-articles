@@ -1,9 +1,19 @@
-import ArticleRepository from '../repositories/article-repository';
+import { composeResolvers } from '@graphql-tools/resolvers-composition';
+import { ArticleQueryResolver } from './article-resolvers';
+import { UserMutationResolver, UserResolverMiddlewares } from './user-resolvers';
 
-export const Resolvers = {
+const resolversComposition = {
+  ...UserResolverMiddlewares
+};
+
+const resolvers = {
   Query: {
-    async articles() {
-      return ArticleRepository.findAll();
-    },
+    ...ArticleQueryResolver,
+  },
+
+  Mutation: {
+    ...UserMutationResolver,
   },
 };
+
+export const Resolvers = composeResolvers(resolvers, resolversComposition);
