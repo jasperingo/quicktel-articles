@@ -1,0 +1,4 @@
+type Aritcle {
+  title: String
+  description: String
+}
