@@ -28,4 +28,3 @@ export const ArticleQueryResolver = {
     return ArticleRepository.findAll();
   },
 };
-

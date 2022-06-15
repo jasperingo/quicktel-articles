@@ -1,7 +1,7 @@
 import { composeResolvers } from '@graphql-tools/resolvers-composition';
 import { ArticleMutationResolver, ArticleQueryResolver, ArticleResolverMiddlewares } from './article-resolvers';
 import { AuthMutationResolver } from './auth-resolver';
-import { UserMutationResolver, UserResolverMiddlewares } from './user-resolvers';
+import { UserMutationResolver, UserQueryResolver, UserResolverMiddlewares } from './user-resolvers';
 
 const resolversComposition = {
   ...UserResolverMiddlewares,
@@ -10,6 +10,7 @@ const resolversComposition = {
 
 const resolvers = {
   Query: {
+    ...UserQueryResolver,
     ...ArticleQueryResolver,
   },
 
