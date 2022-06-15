@@ -1,45 +1,32 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
 import { checkSchema, Schema, validationResult } from 'express-validator';
-import UserRepository from '../repositories/user-repository';
+import ArticleRepository from '../repositories/article-repository';
 import { NextResolverFunction } from '../types';
 
 const schema: Schema = {
-  name: { notEmpty: { errorMessage: 'Field is required' } },
-
-  email: {
-    notEmpty: {
+  title: { 
+    notEmpty: { 
       bail: true,
-      errorMessage: 'Field is required',
-    },
-
-    isEmail: {
-      bail: true,
-      errorMessage: 'Field is invalid',
+      errorMessage: 'Field is required' 
     },
 
     custom: {
       options: async (value) => {
-        if (await UserRepository.existsByEmail(value))
+        if (await ArticleRepository.existsByTitle(value))
           throw 'Field already exists';
       }
     }
   },
 
-  password: {
+  description: {
     notEmpty: {
       bail: true,
       errorMessage: 'Field is required',
     },
-
-    isLength: {
-      options: {
-        min: 6
-      }
-    },
   }
 };
 
-const UserCreateValidationMiddleware = (next: NextResolverFunction) => 
+const ArticleCreateValidationMiddleware = (next: NextResolverFunction) => 
 async (root: any, args: any, context: any, info: any) => {
  
   const req = { body: args };
@@ -55,4 +42,4 @@ async (root: any, args: any, context: any, info: any) => {
   return next(root, args, context, info);
 }
 
-export default UserCreateValidationMiddleware;
+export default ArticleCreateValidationMiddleware;

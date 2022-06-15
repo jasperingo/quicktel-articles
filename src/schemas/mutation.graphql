@@ -1,4 +1,7 @@
 type Mutation {
   createUser(name: String, email: String, password: String): User
+
   authUser(email: String, password: String): Auth
+
+  createArticle(title: String, description: String): Aritcle
 }
